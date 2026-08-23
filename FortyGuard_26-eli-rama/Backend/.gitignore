@@ -1,0 +1,60 @@
+# =============================================================================
+# OmniTherm Backend — .gitignore
+# =============================================================================
+
+# ---------- Environment & Secrets (OWASP A02 — NEVER commit these) ----------
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# ---------- Virtual environments ----------
+venv/
+.venv/
+env/
+
+# ---------- IDE ----------
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ---------- Testing & Coverage ----------
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# ---------- Type checking ----------
+.mypy_cache/
+
+# ---------- Ruff ----------
+.ruff_cache/
+
+# ---------- ChromaDB local data ----------
+chroma_db/
+
+# ---------- Alembic ----------
+# Keep versions/ tracked, but ignore auto-generated __pycache__
+alembic/__pycache__/
+
+# ---------- Vercel ----------
+.vercel/
+
+# ---------- OS ----------
+Thumbs.db
+.DS_Store

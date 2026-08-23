@@ -1,0 +1,3 @@
+﻿ASHRAE Standard 55 defines the optimum thermal comfort zone for commercial and administrative buildings.
+Overcooling occurs when HVAC setpoints drop below 21°C unnecessarily, spiking facility energy consumption by approximately 15% per degree.
+The recommended cooling comfort range under FortyGuard energy optimization protocols is 22.5°C to 24°C.
