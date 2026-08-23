@@ -28,6 +28,9 @@ dependencies = [
     "uuid6>=1.11",
 ]
 
+[tool.setuptools]
+packages = ["app"]
+
 [project.optional-dependencies]
 dev = [
     "pytest>=8.2",

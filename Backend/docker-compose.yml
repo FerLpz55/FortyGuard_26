@@ -1,0 +1,38 @@
+# =============================================================================
+# OmniTherm Backend — Local Development Stack
+# Usage: docker compose up -d
+# =============================================================================
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: omnitherm
+      POSTGRES_PASSWORD: omnitherm_dev
+      POSTGRES_DB: omnitherm
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U omnitherm"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgresql+asyncpg://omnitherm:omnitherm_dev@postgres:5432/omnitherm
+      FORTYGUARD_API_KEY: ${FORTYGUARD_API_KEY:-fg_dev_placeholder}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-placeholder}
+      CHROMA_PATH: /app/chroma_db
+      SECRET_KEY: ${SECRET_KEY:-dev_secret_change_me_in_production}
+      ENVIRONMENT: development
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
