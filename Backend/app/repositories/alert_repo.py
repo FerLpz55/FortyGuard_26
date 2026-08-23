@@ -63,7 +63,8 @@ class AlertRepository(BaseRepository[Alert]):
         if alert and not alert.acknowledged:
             alert.acknowledged = True
             alert.acknowledged_by = user_id
-            alert.acknowledged_at = func.now()
+            from datetime import timezone
+            alert.acknowledged_at = datetime.now(timezone.utc)
             await self.db.flush()
         return alert
 

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime
+import uuid
 from typing import Optional
 
 from app.api.deps import get_db, get_current_user
@@ -13,7 +14,7 @@ router = APIRouter()
 
 @router.get("/sites/{site_id}/alerts", response_model=PaginatedResponse)
 async def get_site_alerts(
-    site_id: str,
+    site_id: uuid.UUID,
     severity: Optional[str] = None,
     alert_type: Optional[str] = None,
     acknowledged: Optional[bool] = None,
@@ -35,11 +36,11 @@ async def get_site_alerts(
     }
     # Clean up None values
     filters = {k: v for k, v in filters.items() if v is not None}
-    return await service.get_by_site(site_id, filters=filters, page=page, size=size)
+    return await service.get_by_site(site_id, current_user.id, filters=filters, page=page, size=size)
 
 @router.patch("/alerts/{alert_id}/acknowledge", response_model=AlertResponse)
 async def acknowledge_alert(
-    alert_id: str,
+    alert_id: uuid.UUID,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ) -> AlertResponse:

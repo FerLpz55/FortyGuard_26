@@ -7,4 +7,4 @@ async def health_check() -> dict:
     """
     Health check endpoint for the application.
     """
-    return {"status": "healthy", "version": "0.1.0"}
+    return {"status": "healthy"}

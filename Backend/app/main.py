@@ -110,3 +110,13 @@ async def app_error_handler(request: Request, exc: AppException) -> JSONResponse
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"type": "about:blank", "title": "Internal Server Error", "status": 500, "detail": str(exc)}
     )
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+    import structlog
+    logger = structlog.get_logger(__name__)
+    logger.error("Unhandled server error", error=str(exc))
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"type": "about:blank", "title": "Internal Server Error", "status": 500, "detail": "An unexpected error occurred."}
+    )
