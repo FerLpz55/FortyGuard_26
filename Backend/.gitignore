@@ -58,3 +58,7 @@ alembic/__pycache__/
 # ---------- OS ----------
 Thumbs.db
 .DS_Store
+
+# ---------- Antigravity ----------
+.agents/
+_agents/

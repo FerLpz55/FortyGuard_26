@@ -17,8 +17,19 @@ class AlertService:
     def __init__(self, db: AsyncSession) -> None:
         self.db = db
         self.alert_repo = AlertRepository(db)
+        from app.repositories.site_repo import SiteRepository
+        self.site_repo = SiteRepository(db)
+        from app.core.exceptions import NotFoundError, AuthorizationError
+        self.AuthorizationError = AuthorizationError
+        self.NotFoundError = NotFoundError
     
-    async def get_by_site(self, site_id: uuid.UUID, page: int = 1, size: int = 10, **filters) -> PaginatedResponse[AlertResponse]:
+    async def _verify_ownership(self, site_id: uuid.UUID, user_id: uuid.UUID):
+        site = await self.site_repo.get_by_id_and_user(site_id, user_id)
+        if not site:
+            raise self.NotFoundError("Site not found or not owned by user")
+
+    async def get_by_site(self, site_id: uuid.UUID, user_id: uuid.UUID, page: int = 1, size: int = 10, **filters) -> PaginatedResponse[AlertResponse]:
+        await self._verify_ownership(site_id, user_id)
         skip = (page - 1) * size
         alerts, total = await self.alert_repo.get_by_site(site_id, skip=skip, limit=size, **filters)
         pages = (total + size - 1) // size
@@ -33,7 +44,8 @@ class AlertService:
     async def acknowledge(self, alert_id: uuid.UUID, user_id: uuid.UUID) -> Alert:
         alert = await self.alert_repo.get_by_id(alert_id)
         if not alert:
-            raise NotFoundError("Alert not found")
+            raise self.NotFoundError("Alert not found")
+        await self._verify_ownership(alert.site_id, user_id)
             
         # Access control verify if necessary (e.g. site ownership)
         

@@ -3,6 +3,7 @@ from typing import Optional
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
+from jose import JWTError
 
 from app.core.database import get_db
 from app.core.security import decode_token
@@ -32,7 +33,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
             raise AuthenticationError("User not found or inactive")
             
         return user
-    except Exception as e:
-        if isinstance(e, AuthenticationError):
-            raise
+    except AuthenticationError:
+        raise
+    except JWTError as e:
         raise AuthenticationError("Could not validate credentials") from e
